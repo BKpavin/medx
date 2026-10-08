@@ -315,6 +315,55 @@
         </div>
       </section>
 
+      <!-- ================================================== -->
+      <!-- ROW 4: MEDICINE / TABLET STOCK CHECKING (FULL WIDTH) -->
+      <!-- ================================================== -->
+      <section class="dash-card tablet-stock-card col-span-2" id="tabletStockSection">
+        <div class="card-title-bar stock-title-bar">
+          <div class="stock-header-title">
+            <h2 class="card-heading">MEDICINE / TABLET STOCK</h2>
+            <span class="card-badge badge-teal">Automatic Inventory Tracking</span>
+          </div>
+
+          <div class="stock-header-actions">
+            <div class="search-box">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="searchTabletInput" placeholder="Search Tablet Name..." class="search-input">
+            </div>
+
+            <button id="openAddTabletBtn" class="btn btn-primary" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              + Add Tablet
+            </button>
+          </div>
+        </div>
+
+        <!-- MEDICINE STOCK SUMMARY BAR -->
+        <div class="stock-summary-bar">
+          <div class="summary-box sum-total">
+            <span class="sum-label">Total Medicines</span>
+            <span class="sum-val" id="sumTotalCount">0</span>
+          </div>
+          <div class="summary-box sum-available">
+            <span class="sum-label">🟢 Stock Available (70%-100%)</span>
+            <span class="sum-val" id="sumAvailableCount">0</span>
+          </div>
+          <div class="summary-box sum-low">
+            <span class="sum-label">🟡 Stock Low (30%-&lt;70%)</span>
+            <span class="sum-val" id="sumLowCount">0</span>
+          </div>
+          <div class="summary-box sum-refill">
+            <span class="sum-label">🔴 Refill Required (&lt;30%)</span>
+            <span class="sum-val" id="sumRefillCount">0</span>
+          </div>
+        </div>
+
+        <!-- TABLET CARDS GRID -->
+        <div class="tablet-cards-grid" id="tabletCardsGrid">
+          <!-- Dynamic tablet cards rendered by JavaScript -->
+        </div>
+      </section>
+
     </main>
 
     <!-- ================================================== -->
@@ -515,6 +564,155 @@
         <div class="modal-footer">
           <button class="btn btn-secondary" id="cancelDoctorModalBtn" type="button">Cancel</button>
           <button class="btn btn-primary" type="submit">Update Patient Records</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================================================== -->
+  <!-- MODAL 3: ADD TABLET FORM -->
+  <!-- ================================================== -->
+  <div class="modal-overlay" id="addTabletModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">ADD TABLET</h3>
+        <button class="modal-close-btn" id="closeAddTabletModalBtn" type="button">&times;</button>
+      </div>
+
+      <form id="addTabletForm">
+        <div class="form-group">
+          <label class="form-label">Tablet Image</label>
+          <div class="image-upload-wrapper">
+            <input type="file" id="addTabletImageInput" accept="image/*" class="file-input-hidden">
+            <label for="addTabletImageInput" class="btn btn-secondary btn-file-upload">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Upload Tablet Image
+            </label>
+            <span class="file-name-preview" id="addTabletImageFileName">No file chosen</span>
+          </div>
+          <div class="image-preview-box" id="addTabletImgPreviewBox">
+            <img id="addTabletImgPreview" src="" alt="Preview" class="img-preview-hidden">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="addTabletNameInput">Tablet Name *</label>
+          <input class="form-control" type="text" id="addTabletNameInput" placeholder="e.g. Paracetamol 500mg" required>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="addTotalTabletsInput">Total Tablets *</label>
+            <input class="form-control" type="number" id="addTotalTabletsInput" placeholder="e.g. 100" min="1" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="addUsedPerDayInput">Tablets Used Per Day *</label>
+            <input class="form-control" type="number" id="addUsedPerDayInput" placeholder="e.g. 2" min="1" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 12px;">
+          <label class="form-label" for="addStartDateInput">Start Date *</label>
+          <input class="form-control" type="date" id="addStartDateInput" required>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelAddTabletModalBtn" type="button">Cancel</button>
+          <button class="btn btn-primary" type="submit">Save Tablet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================================================== -->
+  <!-- MODAL 4: REFILL TABLET FORM -->
+  <!-- ================================================== -->
+  <div class="modal-overlay" id="refillTabletModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">REFILL TABLET STOCK</h3>
+        <button class="modal-close-btn" id="closeRefillModalBtn" type="button">&times;</button>
+      </div>
+
+      <form id="refillTabletForm">
+        <input type="hidden" id="refillTabletIdInput">
+
+        <div class="refill-info-box">
+          <h4 class="refill-tablet-title" id="refillTabletNameDisplay">Paracetamol 500mg</h4>
+          <div class="refill-stat-row">
+            <span>Current Remaining:</span>
+            <strong id="refillCurrentRemainingDisplay" class="text-navy">20 tablets</strong>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 16px;">
+          <label class="form-label" for="addRefillQuantityInput">Add New Tablets Quantity *</label>
+          <input class="form-control" type="number" id="addRefillQuantityInput" placeholder="e.g. 100" min="1" required>
+          <span class="help-text">These tablets will be added to your current remaining stock and reset daily tracking from today.</span>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelRefillModalBtn" type="button">Cancel</button>
+          <button class="btn btn-primary" type="submit">Confirm Refill</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================================================== -->
+  <!-- MODAL 5: UPDATE TABLET FORM -->
+  <!-- ================================================== -->
+  <div class="modal-overlay" id="updateTabletModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">UPDATE TABLET DETAILS</h3>
+        <button class="modal-close-btn" id="closeUpdateTabletModalBtn" type="button">&times;</button>
+      </div>
+
+      <form id="updateTabletForm">
+        <input type="hidden" id="updateTabletIdInput">
+
+        <div class="form-group">
+          <label class="form-label">Tablet Image (Optional Change)</label>
+          <div class="image-upload-wrapper">
+            <input type="file" id="updateTabletImageInput" accept="image/*" class="file-input-hidden">
+            <label for="updateTabletImageInput" class="btn btn-secondary btn-file-upload">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              Change Tablet Image
+            </label>
+            <span class="file-name-preview" id="updateTabletImageFileName">Keep current image</span>
+          </div>
+          <div class="image-preview-box" id="updateTabletImgPreviewBox">
+            <img id="updateTabletImgPreview" src="" alt="Preview" class="img-preview">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="updateTabletNameInput">Tablet Name *</label>
+          <input class="form-control" type="text" id="updateTabletNameInput" required>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="updateTotalTabletsInput">Total Tablets *</label>
+            <input class="form-control" type="number" id="updateTotalTabletsInput" min="1" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="updateUsedPerDayInput">Tablets Used Per Day *</label>
+            <input class="form-control" type="number" id="updateUsedPerDayInput" min="1" required>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 12px;">
+          <label class="form-label" for="updateStartDateInput">Start Date *</label>
+          <input class="form-control" type="date" id="updateStartDateInput" required>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelUpdateTabletModalBtn" type="button">Cancel</button>
+          <button class="btn btn-primary" type="submit">Update Tablet</button>
         </div>
       </form>
     </div>
