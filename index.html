@@ -24,8 +24,66 @@
 
 <body>
 
+  <!-- AUTHENTICATION SCREEN CONTAINER (STEP 8) -->
+  <div class="auth-screen-overlay" id="authScreenContainer" style="display: flex;">
+    <div class="auth-card-box">
+      <div class="auth-card-header">
+        <img src="med-x-logo.jpg" alt="MEDX Logo" class="auth-logo-img">
+        <h2 class="auth-brand-title">MEDX HEALTHCARE SYSTEM</h2>
+        <p class="auth-brand-subtitle">Patient Healthcare & Clinical Management Portal</p>
+      </div>
+
+      <!-- Auth Tabs -->
+      <div class="auth-tabs">
+        <button id="authTabLogin" class="auth-tab-btn active" type="button">Sign In</button>
+        <button id="authTabRegister" class="auth-tab-btn" type="button">Create Account</button>
+      </div>
+
+      <!-- Error / Alert Message Box -->
+      <div id="authErrorBox" class="auth-error-box" style="display: none;"></div>
+
+      <!-- LOGIN FORM -->
+      <form id="authLoginForm" class="auth-form-content">
+        <div class="form-group">
+          <label class="form-label" for="loginEmailInput">Email Address *</label>
+          <input class="form-control" type="email" id="loginEmailInput" placeholder="name@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loginPasswordInput">Password *</label>
+          <input class="form-control" type="password" id="loginPasswordInput" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" id="loginSubmitBtn">
+          Sign In to MEDX →
+        </button>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form id="authRegisterForm" class="auth-form-content" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="regFullNameInput">Full Name *</label>
+          <input class="form-control" type="text" id="regFullNameInput" placeholder="e.g. John Doe" required autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regEmailInput">Email Address *</label>
+          <input class="form-control" type="email" id="regEmailInput" placeholder="name@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regPasswordInput">Password * (Min 6 characters)</label>
+          <input class="form-control" type="password" id="regPasswordInput" placeholder="••••••••" required minlength="6" autocomplete="new-password">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="regConfirmPasswordInput">Confirm Password *</label>
+          <input class="form-control" type="password" id="regConfirmPasswordInput" placeholder="••••••••" required minlength="6" autocomplete="new-password">
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" id="registerSubmitBtn">
+          Create Account & Sign In →
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- APP CONTAINER LAYOUT -->
-  <div class="dashboard-app">
+  <div class="dashboard-app" id="mainDashboardApp" style="display: none;">
 
     <!-- ================================================== -->
     <!-- 1. FIXED LEFT SIDEBAR NAVIGATION -->
@@ -123,6 +181,28 @@
             <span class="pulse-dot"></span> Live Sync
           </span>
 
+          <!-- NOTIFICATION BELL & DROPDOWN PANEL -->
+          <div class="notification-wrapper" style="position: relative; display: inline-block;">
+            <button id="notificationBellBtn" class="btn btn-ghost btn-sm notification-bell-btn" type="button" title="Notifications" style="position: relative; padding: 6px 10px; display: inline-flex; align-items: center; justify-content: center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span id="notificationBadge" class="notification-badge" style="display: none; position: absolute; top: -2px; right: -2px; background: #e63946; color: #fff; font-size: 10px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; line-height: 16px; text-align: center;">0</span>
+            </button>
+
+            <!-- Notification Dropdown Panel -->
+            <div id="notificationDropdown" class="notification-dropdown" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 8px; width: 320px; max-height: 420px; background: #ffffff; border: 1px solid var(--border-color, #e0e0e0); border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 1000; flex-direction: column; overflow: hidden;">
+              <div class="notification-header" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-light, #f8f9fa); border-bottom: 1px solid var(--border-color, #e0e0e0);">
+                <h4 style="margin: 0; font-size: 14px; font-weight: 600; color: #1e293b;">Notifications</h4>
+                <button id="markAllReadBtn" type="button" style="background: none; border: none; color: #0284c7; font-size: 12px; font-weight: 500; cursor: pointer; padding: 0;">Mark all as read</button>
+              </div>
+              <div id="notificationList" class="notification-list" style="max-height: 350px; overflow-y: auto; padding: 0;">
+                <div style="padding: 24px; text-align: center; color: #64748b; font-size: 13px;">No notifications</div>
+              </div>
+            </div>
+          </div>
+
           <button id="printEhrBtn" class="btn btn-outline btn-sm" type="button">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polyline points="6 9 6 2 18 2 18 9" />
@@ -138,6 +218,14 @@
             </svg>
             Reset
           </button>
+
+          <!-- USER AUTH BADGE & LOGOUT (STEP 8) -->
+          <div class="user-auth-badge" id="authUserBadge" style="display: none; align-items: center; gap: 8px;">
+            <span id="authUserName" style="font-weight: 600; color: #0f172a; font-size: 12px; background: #e0f2fe; padding: 5px 12px; border-radius: 12px; border: 1px solid #bae6fd;">👤 User</span>
+            <button id="logoutBtn" class="btn btn-outline btn-sm" type="button" style="color: #dc2626; border-color: #fca5a5; padding: 4px 10px; font-size: 12px;" title="Logout of MEDX">
+              🚪 Logout
+            </button>
+          </div>
         </div>
       </header>
 
@@ -159,47 +247,47 @@
                 <span class="card-badge badge-blue">Active Patient</span>
               </div>
               <div class="patient-card-body">
-                <div class="patient-avatar-box" id="dashPatientAvatar">EV</div>
+                <div class="patient-avatar-box" id="dashPatientAvatar">--</div>
                 <div class="patient-card-details">
                   <div class="info-row-item">
                     <span class="item-label">Patient Name:</span>
-                    <span class="item-value highlight-value" id="dashPatientName">Eleanor Vance</span>
+                    <span class="item-value highlight-value" id="dashPatientName">No patient registered yet</span>
                   </div>
                   <div class="info-row-item">
                     <span class="item-label">Age:</span>
-                    <span class="item-value" id="dashPatientAge">65 Years</span>
+                    <span class="item-value" id="dashPatientAge">Not provided</span>
                   </div>
                   <div class="info-row-item">
                     <span class="item-label">Gender:</span>
-                    <span class="item-value" id="dashPatientGender">Female</span>
+                    <span class="item-value" id="dashPatientGender">Not provided</span>
                   </div>
                   <div class="info-row-item">
                     <span class="item-label">Date of Birth:</span>
-                    <span class="item-value" id="dashPatientDob">1961-04-12</span>
+                    <span class="item-value" id="dashPatientDob">Not provided</span>
                   </div>
                   <div class="info-row-item">
                     <span class="item-label">Blood Group:</span>
-                    <span class="item-value highlight-bold text-navy" id="dashPatientBloodGroup">O+</span>
+                    <span class="item-value highlight-bold text-navy" id="dashPatientBloodGroup">Not provided</span>
                   </div>
                   <div class="info-row-item">
                     <span class="item-label">Height:</span>
-                    <span class="item-value" id="dashPatientHeight">165 cm</span>
+                    <span class="item-value" id="dashPatientHeight">Not provided</span>
                   </div>
                   <div class="info-row-item">
                     <span class="item-label">Weight:</span>
-                    <span class="item-value" id="dashPatientWeight">68.5 kg</span>
+                    <span class="item-value" id="dashPatientWeight">Not provided</span>
                   </div>
                   <div class="info-row-item">
                     <span class="item-label">BMI:</span>
-                    <span class="item-value highlight-bold text-cyan" id="dashPatientBmi">25.2 (Overweight)</span>
+                    <span class="item-value highlight-bold text-cyan" id="dashPatientBmi">Not provided</span>
                   </div>
                   <div class="info-row-item">
                     <span class="item-label">Health Ratio:</span>
-                    <span class="item-value text-green-bold" id="dashPatientRatioInline">93% (Stable & Doctor Monitored)</span>
+                    <span class="item-value text-green-bold" id="dashPatientRatioInline">Not recorded</span>
                   </div>
                   <div class="info-row-item">
                     <span class="item-label">Emergency Contact:</span>
-                    <span class="item-value" id="dashPatientEmergencyContact">+1 (555) 234-5678 (Mark Vance - Spouse)</span>
+                    <span class="item-value" id="dashPatientEmergencyContact">Not provided</span>
                   </div>
                 </div>
               </div>
@@ -213,7 +301,7 @@
               </div>
               <div class="ratio-card-body">
                 <div class="ratio-stat-display">
-                  <div class="ratio-big-number" id="dashRatioBigNumber">82%</div>
+                  <div class="ratio-big-number" id="dashRatioBigNumber">N/A</div>
                   <p class="ratio-sub-text">Doctor-Calculated Vitals Score Index</p>
                 </div>
                 <div class="graph-wrapper">
@@ -233,23 +321,32 @@
                 <span class="card-badge badge-teal">Primary Doctor</span>
               </div>
               <div class="info-content-mini">
-                <h4 class="info-name-main" id="dashSummaryDocName">Dr. Sarah Jenkins, MD</h4>
-                <p class="info-sub-item" id="dashSummaryDocSpec">Specialization: Cardiology & Internal Medicine</p>
-                <p class="info-sub-item" id="dashSummaryDocClinic">Hospital/Clinic: Metropolitan Wellness Center</p>
-                <p class="info-sub-item" id="dashSummaryDocContact">Contact: +1 (555) 902-3481</p>
+                <h4 class="info-name-main" id="dashSummaryDocName">No doctor assigned yet</h4>
+                <p class="info-sub-item" id="dashSummaryDocSpec">Specialization: Not assigned</p>
+                <p class="info-sub-item" id="dashSummaryDocClinic">Hospital/Clinic: Not assigned</p>
+                <p class="info-sub-item" id="dashSummaryDocContact">Contact: Not assigned</p>
               </div>
             </div>
 
-            <!-- CAREGIVER SUMMARY CARD -->
+            <!-- FAMILY MEMBERS SUMMARY CARD -->
             <div class="dash-card">
-              <div class="card-title-bar">
-                <h3 class="card-heading">CAREGIVER SUMMARY</h3>
-                <span class="card-badge badge-teal">Primary Caregiver</span>
+              <div class="card-title-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <h3 class="card-heading" style="margin: 0;">FAMILY MEMBERS SUMMARY</h3>
+                  <span class="card-badge badge-teal" id="familyMemberCountBadge">0 Members</span>
+                </div>
+                <button class="btn btn-primary btn-sm" id="openAddFamilyMemberBtn" type="button" style="display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; font-size: 0.8rem;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7" r="4"></circle>
+                    <line x1="20" y1="8" x2="20" y2="14"></line>
+                    <line x1="17" y1="11" x2="23" y2="11"></line>
+                  </svg>
+                  + Add Member
+                </button>
               </div>
-              <div class="info-content-mini">
-                <h4 class="info-name-main" id="dashSummaryCaregiverName">Mark Vance</h4>
-                <p class="info-sub-item" id="dashSummaryCaregiverRel">Relationship: Spouse / Primary Caregiver</p>
-                <p class="info-sub-item" id="dashSummaryCaregiverContact">Contact Number: +1 (555) 234-5678</p>
+              <div class="family-members-container" id="dashFamilyMembersList" style="display: flex; flex-direction: column; gap: 10px; min-height: 80px;">
+                <!-- Dynamically populated or empty state -->
               </div>
             </div>
 
@@ -258,7 +355,7 @@
               <div class="card-title-bar">
                 <div style="display: flex; align-items: center; gap: 8px;">
                   <h3 class="card-heading">🔔 CAREGIVER NOTIFICATIONS & ALERTS</h3>
-                  <span class="card-badge badge-teal" id="dashCaregiverTargetBadge">Recipient: Mark Vance</span>
+                  <span class="card-badge badge-teal" id="dashCaregiverTargetBadge">Recipient: Not assigned</span>
                 </div>
                 <button class="btn btn-outline btn-sm switch-nav-btn" data-target="view-medicine-schedule"
                   type="button">Medicine Schedule →</button>
@@ -307,25 +404,25 @@
                   <div class="meal-header"><span class="meal-icon">🍳</span>
                     <h4 class="meal-name">Breakfast</h4><span class="meal-time">08:00 AM</span>
                   </div>
-                  <p class="meal-desc" id="dashSummaryBf">Warm steel-cut oatmeal with blueberries & green tea.</p>
+                  <p class="meal-desc" id="dashSummaryBf">No breakfast plan assigned.</p>
                 </div>
                 <div class="meal-card meal-lunch">
                   <div class="meal-header"><span class="meal-icon">🥗</span>
                     <h4 class="meal-name">Lunch</h4><span class="meal-time">01:00 PM</span>
                   </div>
-                  <p class="meal-desc" id="dashSummaryLunch">Grilled chicken breast, steamed quinoa & green salad.</p>
+                  <p class="meal-desc" id="dashSummaryLunch">No lunch plan assigned.</p>
                 </div>
                 <div class="meal-card meal-snack">
                   <div class="meal-header"><span class="meal-icon">🍏</span>
                     <h4 class="meal-name">Evening Snack</h4><span class="meal-time">05:00 PM</span>
                   </div>
-                  <p class="meal-desc" id="dashSummarySnack">1 green apple with walnuts or cucumber hummus.</p>
+                  <p class="meal-desc" id="dashSummarySnack">No snack plan assigned.</p>
                 </div>
                 <div class="meal-card meal-dinner">
                   <div class="meal-header"><span class="meal-icon">🍲</span>
                     <h4 class="meal-name">Dinner</h4><span class="meal-time">07:30 PM</span>
                   </div>
-                  <p class="meal-desc" id="dashSummaryDinner">Baked wild salmon fillet, brown rice & spinach soup.</p>
+                  <p class="meal-desc" id="dashSummaryDinner">No dinner plan assigned.</p>
                 </div>
               </div>
             </div>
@@ -359,13 +456,13 @@
               </div>
               <div class="card-body-content">
                 <div class="info-row-item"><span class="item-label">Doctor Name:</span><span
-                    class="item-value highlight-bold" id="docDetailName">Dr. Sarah Jenkins, MD</span></div>
+                    class="item-value highlight-bold" id="docDetailName">No doctor assigned yet</span></div>
                 <div class="info-row-item"><span class="item-label">Specialization:</span><span class="item-value"
-                    id="docDetailSpec">Cardiology & Internal Medicine</span></div>
+                    id="docDetailSpec">Not assigned</span></div>
                 <div class="info-row-item"><span class="item-label">Hospital/Clinic:</span><span class="item-value"
-                    id="docDetailClinic">Metropolitan Wellness Center</span></div>
+                    id="docDetailClinic">Not assigned</span></div>
                 <div class="info-row-item"><span class="item-label">Contact Details:</span><span class="item-value"
-                    id="docDetailContact">+1 (555) 902-3481 • dr.jenkins@metrowellness.org</span></div>
+                    id="docDetailContact">Not assigned</span></div>
               </div>
             </div>
 
@@ -377,11 +474,11 @@
               </div>
               <div class="card-body-content">
                 <div class="info-row-item"><span class="item-label">Caregiver Name:</span><span
-                    class="item-value highlight-bold" id="caregiverDetailName">Mark Vance</span></div>
+                    class="item-value highlight-bold" id="caregiverDetailName">No caregiver assigned yet</span></div>
                 <div class="info-row-item"><span class="item-label">Relationship:</span><span class="item-value"
-                    id="caregiverDetailRel">Spouse / Primary Caregiver</span></div>
+                    id="caregiverDetailRel">Not assigned</span></div>
                 <div class="info-row-item"><span class="item-label">Contact Number:</span><span class="item-value"
-                    id="caregiverDetailContact">+1 (555) 234-5678</span></div>
+                    id="caregiverDetailContact">Not assigned</span></div>
               </div>
             </div>
 
@@ -394,26 +491,22 @@
               <div class="card-body-content">
                 <div class="suggestion-block">
                   <h4 class="block-subtitle text-navy">💊 Medicines:</h4>
-                  <p class="block-text" id="dashMedicines">Metformin 500mg (1 tablet after breakfast), Lisinopril 10mg
-                    (1 tablet morning), Vitamin D3 1000 IU daily.</p>
+                  <p class="block-text" id="dashMedicines">No doctor suggestions recorded.</p>
                 </div>
                 <div class="thin-row-divider"></div>
                 <div class="suggestion-block">
                   <h4 class="block-subtitle text-cyan">🏃 Exercise:</h4>
-                  <p class="block-text" id="dashExercise">30 minutes of low-impact morning walking, light
-                    range-of-motion stretching exercises 3 times weekly.</p>
+                  <p class="block-text" id="dashExercise">No exercise routine assigned.</p>
                 </div>
                 <div class="thin-row-divider"></div>
                 <div class="suggestion-block">
                   <h4 class="block-subtitle text-blue">🛌 Rest:</h4>
-                  <p class="block-text" id="dashRest">8 hours of uninterrupted nocturnal sleep. Afternoon rest period of
-                    30-45 minutes recommended.</p>
+                  <p class="block-text" id="dashRest">No sleep/rest instructions recorded.</p>
                 </div>
                 <div class="thin-row-divider"></div>
                 <div class="suggestion-block">
                   <h4 class="block-subtitle text-purple">📋 General Instructions:</h4>
-                  <p class="block-text" id="dashInstructions">Monitor blood pressure daily at 09:00 AM. Maintain daily
-                    hydration (minimum 2.0L water). Avoid high-sodium processed foods.</p>
+                  <p class="block-text" id="dashInstructions">No special medical instructions.</p>
                 </div>
               </div>
             </div>
@@ -477,9 +570,8 @@
               <div class="stock-header-title">
                 <h3 class="card-heading">📋 DOCTOR-PRESCRIBED MEDICINE SCHEDULE</h3>
                 <div class="med-sched-meta-tags">
-                  <span class="card-badge badge-teal" id="medSchedDoctorBadge">👨‍⚕️ Prescribed by Dr. Sarah Jenkins,
-                    MD</span>
-                  <span class="card-badge badge-blue" id="medSchedPatientBadge">👤 Patient: Eleanor Vance</span>
+                  <span class="card-badge badge-teal" id="medSchedDoctorBadge">👨‍⚕️ Prescribed by: Not assigned</span>
+                  <span class="card-badge badge-blue" id="medSchedPatientBadge">👤 Patient: Not provided</span>
                 </div>
               </div>
               <div class="stock-header-actions">
@@ -531,6 +623,30 @@
               </svg>
               <span><strong>Doctor-Provided Schedule:</strong> MEDX displays the medicine schedule provided by the
                 patient's doctor. MEDX does not independently prescribe, recommend medicines, or alter dosages.</span>
+            </div>
+
+            <!-- MEDICINE HISTORY & ADHERENCE SUMMARY BAR (STEP 6F) -->
+            <div class="stock-summary-bar" id="medAdherenceSummaryBar" style="margin-top: 16px; margin-bottom: 20px;">
+              <div class="summary-box sum-total">
+                <span class="sum-label">Total Doses Recorded</span>
+                <span class="sum-val" id="adherenceTotalDoses">0</span>
+              </div>
+              <div class="summary-box sum-available">
+                <span class="sum-label">🟢 Doses Taken</span>
+                <span class="sum-val" id="adherenceTakenCount">0</span>
+              </div>
+              <div class="summary-box sum-low">
+                <span class="sum-label">🟡 Doses Pending</span>
+                <span class="sum-val" id="adherencePendingCount">0</span>
+              </div>
+              <div class="summary-box sum-refill">
+                <span class="sum-label">🔴 Doses Skipped</span>
+                <span class="sum-val" id="adherenceSkippedCount">0</span>
+              </div>
+              <div class="summary-box" style="background-color: var(--blue-bg); border-color: var(--blue-border); flex: 1.2;">
+                <span class="sum-label" style="color: var(--brand-navy);">📊 Overall Adherence Rate</span>
+                <span class="sum-val" id="adherenceOverallPercentage" style="color: var(--brand-navy);">0%</span>
+              </div>
             </div>
 
             <!-- SCHEDULE TIME GROUPS -->
@@ -705,7 +821,7 @@
                     <!-- TABLET NAME -->
                     <div class="result-block-item">
                       <h4 class="result-block-heading">💊 Tablet Name</h4>
-                      <div class="tablet-name-display-box" id="resultTabletName">Paracetamol</div>
+                      <div class="tablet-name-display-box" id="resultTabletName">No tablet scanned yet</div>
                       <span class="source-attribution-tag" id="resultSourceTag">Source: NIH / FDA Verified Drug
                         Database</span>
                     </div>
@@ -714,7 +830,7 @@
                     <div class="result-block-item" style="margin-top: 16px;">
                       <h4 class="result-block-heading">📌 Tablet Usage</h4>
                       <p class="result-text-content" id="resultTabletUsage">
-                        Paracetamol is commonly used for temporary relief of pain and fever.
+                        Upload a tablet image or select a medicine to view detailed information.
                       </p>
                     </div>
 
@@ -774,13 +890,13 @@
               </div>
               <div class="card-body-content">
                 <div class="info-row-item"><span class="item-label">Patient Name:</span><span
-                    class="item-value highlight-value" id="patDetailName">Eleanor Vance</span></div>
+                    class="item-value highlight-value" id="patDetailName">No patient registered yet</span></div>
                 <div class="info-row-item"><span class="item-label">Age:</span><span class="item-value"
-                    id="patDetailAge">65 Years</span></div>
+                    id="patDetailAge">Not provided</span></div>
                 <div class="info-row-item"><span class="item-label">Gender:</span><span class="item-value"
-                    id="patDetailGender">Female</span></div>
+                    id="patDetailGender">Not provided</span></div>
                 <div class="info-row-item"><span class="item-label">Contact Details:</span><span class="item-value"
-                    id="patDetailContact">+1 (555) 892-1049</span></div>
+                    id="patDetailContact">Not provided</span></div>
               </div>
             </div>
 
@@ -793,32 +909,29 @@
               <div class="card-body-content">
                 <div class="vitals-detail-item">
                   <span class="vitals-label">Diagnosis:</span>
-                  <span class="vitals-val highlight-bold" id="dashDiagnosis">Mild Essential Hypertension & Type-2
-                    Pre-diabetes</span>
+                  <span class="vitals-val highlight-bold" id="dashDiagnosis">No medical diagnosis recorded</span>
                 </div>
                 <div class="vitals-grid">
                   <div class="vital-mini-box">
                     <span class="vital-box-label">Blood Pressure</span>
-                    <span class="vital-box-val" id="dashBp">118/76 mmHg</span>
-                    <span class="vital-status-tag tag-green">Normal</span>
+                    <span class="vital-box-val" id="dashBp">Not recorded</span>
+                    <span class="vital-status-tag tag-blue">Pending</span>
                   </div>
                   <div class="vital-mini-box">
                     <span class="vital-box-label">Blood Sugar</span>
-                    <span class="vital-box-val" id="dashSugar">98 mg/dL</span>
-                    <span class="vital-status-tag tag-green">Fasting Normal</span>
+                    <span class="vital-box-val" id="dashSugar">Not recorded</span>
+                    <span class="vital-status-tag tag-blue">Pending</span>
                   </div>
                   <div class="vital-mini-box">
                     <span class="vital-box-label">Weight</span>
-                    <span class="vital-box-val" id="dashWeight">68.5 kg</span>
-                    <span class="vital-status-tag tag-blue">Target Met</span>
+                    <span class="vital-box-val" id="dashWeight">Not recorded</span>
+                    <span class="vital-status-tag tag-blue">Pending</span>
                   </div>
                 </div>
                 <div class="thin-row-divider" style="margin: 14px 0;"></div>
                 <div class="vitals-detail-item">
                   <span class="vitals-label">Other Health Information:</span>
-                  <p class="block-text" id="dashOtherHealth">Annual lipid profile within target parameters (LDL: 92
-                    mg/dL, HDL: 58 mg/dL). No reported drug allergies or respiratory issues. Next follow-up consultation
-                    scheduled in 30 days.</p>
+                  <p class="block-text" id="dashOtherHealth">No additional health details provided.</p>
                 </div>
               </div>
             </div>
@@ -897,7 +1010,11 @@
                   <span class="hc-title-icon">📊</span>
                   <h3 class="card-heading">HEALTH COMPARISON</h3>
                 </div>
-                <span class="card-badge badge-blue">Vitals Benchmark</span>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <button id="openGenerateHealthReportBtn" class="btn btn-outline btn-sm" type="button">📄 Generate Health Report</button>
+                  <button id="openAddHealthRecordModalBtn" class="btn btn-primary btn-sm" type="button">+ Record Vitals</button>
+                  <span class="card-badge badge-blue">Vitals Benchmark</span>
+                </div>
               </div>
               <div class="health-comparison-grid">
                 
@@ -1020,6 +1137,35 @@
               </div>
             </div>
 
+            <!-- VITALS HISTORY TABLE CARD (STEP 6I) -->
+            <div class="dash-card col-span-2">
+              <div class="card-title-bar">
+                <div class="hc-title-wrapper">
+                  <span class="hc-title-icon">📜</span>
+                  <h3 class="card-heading">PATIENT VITALS HISTORY</h3>
+                </div>
+                <span class="card-badge badge-teal">Firestore Health Records</span>
+              </div>
+              <div class="table-responsive" style="max-height: 350px; overflow-y: auto; padding: 12px;">
+                <table class="history-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                  <thead>
+                    <tr style="background-color: var(--bg-subtle); text-align: left; color: var(--text-muted); font-size: 12px; font-weight: 700;">
+                      <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Date & Time</th>
+                      <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Health Ratio</th>
+                      <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Blood Pressure</th>
+                      <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Blood Sugar</th>
+                      <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Pulse / SpO2 / Temp</th>
+                      <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Weight & BMI</th>
+                      <th style="padding: 10px 14px; border-bottom: 1px solid var(--border-color);">Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody id="vitalsHistoryTableBody">
+                    <!-- Dynamically populated from healthRecords collection -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
         </section>
 
@@ -1115,7 +1261,7 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary closeRegisterModal" type="button">Cancel</button>
-          <button class="btn btn-primary" type="submit">Complete Registration</button>
+          <button class="btn btn-primary" type="submit" id="regSubmitBtn">Complete Registration</button>
         </div>
       </form>
     </div>
@@ -1405,6 +1551,9 @@
         <button class="modal-close-btn" id="closeMedHistoryModalBtn" type="button">&times;</button>
       </div>
       <div class="modal-body-history" style="padding: 16px 0;">
+        <!-- ADHERENCE & MEDICINE-WISE SUMMARY (STEP 6F) -->
+        <div id="medicineAdherenceModalSummary" style="margin-bottom: 16px;"></div>
+
         <div class="history-filter-bar"
           style="display: flex; gap: 12px; margin-bottom: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
           <div class="search-box" style="flex: 1; max-width: 360px;">
@@ -1451,8 +1600,149 @@
     </div>
   </div>
 
+  <!-- MODAL 8: RECORD PATIENT HEALTH VITALS (STEP 6I) -->
+  <div class="modal-overlay" id="addHealthRecordModal">
+    <div class="modal-card modal-large">
+      <div class="modal-header">
+        <h3 class="modal-title">🩺 RECORD PATIENT HEALTH VITALS</h3>
+        <button class="modal-close-btn" id="closeAddHealthRecordModalBtn" type="button">&times;</button>
+      </div>
+      <form id="addHealthRecordForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="hrRecordedDateInput">Date *</label>
+            <input class="form-control" type="date" id="hrRecordedDateInput" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hrRecordedTimeInput">Time *</label>
+            <input class="form-control" type="time" id="hrRecordedTimeInput" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hrHealthRatioInput">Health Ratio Score (%)</label>
+            <input class="form-control" type="number" id="hrHealthRatioInput" min="0" max="100" placeholder="e.g. 88">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hrBloodPressureInput">Blood Pressure (mmHg)</label>
+            <input class="form-control" type="text" id="hrBloodPressureInput" placeholder="e.g. 118/76">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hrBloodSugarInput">Blood Sugar (mg/dL)</label>
+            <input class="form-control" type="text" id="hrBloodSugarInput" placeholder="e.g. 98">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hrHeartRateInput">Heart Rate (bpm)</label>
+            <input class="form-control" type="number" id="hrHeartRateInput" placeholder="e.g. 72">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hrTemperatureInput">Body Temperature (°F)</label>
+            <input class="form-control" type="text" id="hrTemperatureInput" placeholder="e.g. 98.6">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hrOxygenLevelInput">Oxygen Level (SpO2 %)</label>
+            <input class="form-control" type="number" id="hrOxygenLevelInput" min="0" max="100" placeholder="e.g. 98">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hrWeightInput">Weight (kg)</label>
+            <input class="form-control" type="number" step="0.1" id="hrWeightInput" placeholder="e.g. 68.5">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hrHeightInput">Height (cm)</label>
+            <input class="form-control" type="number" id="hrHeightInput" placeholder="e.g. 165">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top: 12px;">
+          <label class="form-label" for="hrNotesInput">Clinical Notes / Observations</label>
+          <textarea class="form-control" id="hrNotesInput" rows="2" placeholder="e.g. Patient feeling well. Vitals within target parameters."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelAddHealthRecordModalBtn" type="button">Cancel</button>
+          <button class="btn btn-primary" type="submit">Save Health Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 9: PATIENT HEALTH REPORT (STEP 6J) -->
+  <div class="modal-overlay" id="healthReportModal">
+    <div class="modal-card modal-large" style="max-width: 850px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h3 class="modal-title">📄 MEDX HEALTHCARE SYSTEM — PATIENT HEALTH REPORT</h3>
+        <button class="modal-close-btn" id="closeHealthReportModalBtn" type="button">&times;</button>
+      </div>
+      <div class="modal-body" id="healthReportModalBody" style="padding: 24px; color: var(--text-color);">
+        <!-- Dynamically generated report -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="printHealthReportBtn" type="button">🖨️ Print Report</button>
+        <button class="btn btn-secondary" id="closeHealthReportFooterBtn" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT FAMILY MEMBER -->
+  <div class="modal-overlay" id="familyMemberModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="familyMemberModalTitle">👨‍👩‍👧 Add Family Member</h3>
+        <button class="modal-close-btn" id="closeFamilyMemberModalBtn" type="button">&times;</button>
+      </div>
+      <form id="familyMemberForm">
+        <input type="hidden" id="familyMemberIdInput" value="">
+        <div class="form-grid">
+          <div class="form-group col-span-2">
+            <label class="form-label" for="fmFullNameInput">Full Name *</label>
+            <input class="form-control" type="text" id="fmFullNameInput" placeholder="e.g. Sarah Jenkins" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fmRelationshipSelect">Relationship *</label>
+            <select class="form-control" id="fmRelationshipSelect" required>
+              <option value="">Select Relationship</option>
+              <option value="Spouse">Spouse</option>
+              <option value="Parent">Parent</option>
+              <option value="Child">Child</option>
+              <option value="Sibling">Sibling</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fmContactInput">Contact Number *</label>
+            <input class="form-control" type="text" id="fmContactInput" placeholder="e.g. +1 555-0199" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fmEmailInput">Email Address</label>
+            <input class="form-control" type="email" id="fmEmailInput" placeholder="e.g. sarah@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="fmDobInput">Date of Birth</label>
+            <input class="form-control" type="date" id="fmDobInput">
+          </div>
+          <div class="form-group col-span-2" style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
+            <input type="checkbox" id="fmEmergencyContactInput" style="width: 18px; height: 18px; cursor: pointer;">
+            <label class="form-label" for="fmEmergencyContactInput" style="margin: 0; cursor: pointer;">Mark as Emergency Contact</label>
+          </div>
+          <div class="form-group col-span-2">
+            <label class="form-label" for="fmNotesInput">Notes / Additional Info</label>
+            <textarea class="form-control" id="fmNotesInput" rows="2" placeholder="e.g. Primary contact during morning hours"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="cancelFamilyMemberModalBtn" type="button">Cancel</button>
+          <button class="btn btn-primary" type="submit" id="saveFamilyMemberBtn">Save Family Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- TOAST CONTAINER -->
   <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Official Firebase SDK (v10.12.0) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <!-- Firebase Configuration & Initialization Module -->
+  <script src="firebase-config.js"></script>
 
   <!-- External JavaScript -->
   <script src="script.js" defer></script>

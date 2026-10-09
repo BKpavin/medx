@@ -1277,7 +1277,7 @@ body {
 }
 
 .img-preview-hidden {
-  display: none;
+  display: none !important;
 }
 
 .refill-info-box {
@@ -1369,7 +1369,12 @@ body {
 
 @media print {
   body { background: white; }
-  .sidebar, .top-header-bar, .modal-overlay, .btn, .stock-header-actions, .tablet-card-actions { display: none !important; }
+  .sidebar, .top-header-bar, .btn, .stock-header-actions, .tablet-card-actions { display: none !important; }
+  body:not(.printing-modal) .modal-overlay { display: none !important; }
+  body.printing-modal .main-wrapper { display: none !important; }
+  body.printing-modal .modal-overlay { display: block !important; position: static !important; background: white !important; padding: 0 !important; }
+  body.printing-modal .modal-card { box-shadow: none !important; border: none !important; max-height: none !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; }
+  body.printing-modal .modal-header, body.printing-modal .modal-footer { display: none !important; }
   .main-wrapper { margin-left: 0; width: 100%; }
   .dash-card { box-shadow: none; border: 1px solid #ccc; }
 }
@@ -2587,6 +2592,106 @@ body {
   font-size: 13px;
   font-weight: 800;
   color: #0f172a;
+}
+
+/* ================================================== */
+/* STEP 8: FIREBASE AUTHENTICATION UI STYLES */
+/* ================================================== */
+.auth-screen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 20px;
+}
+
+.auth-card-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-card-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-logo-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.auth-brand-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: 0.5px;
+}
+
+.auth-brand-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.auth-tabs {
+  display: flex;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  padding: 9px 12px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-tab-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.auth-error-box {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.btn-block {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 

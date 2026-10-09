@@ -1,0 +1,143 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // 1. PATIENTS COLLECTION
+    // Users can read/write their own patient document (ID == request.auth.uid)
+    // or documents created by/linked to them.
+    match /patients/{patientId} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid == patientId ||
+        resource.data.createdBy == request.auth.uid ||
+        resource.data.userId == request.auth.uid
+      );
+      allow create: if isAuthenticated() && (
+        request.auth.uid == patientId ||
+        !('createdBy' in request.resource.data) ||
+        request.resource.data.createdBy == request.auth.uid ||
+        request.resource.data.userId == request.auth.uid
+      );
+      allow update, delete: if isAuthenticated() && (
+        request.auth.uid == patientId ||
+        resource.data.createdBy == request.auth.uid ||
+        resource.data.userId == request.auth.uid
+      );
+    }
+
+    // 2. DOCTORS COLLECTION
+    match /doctors/{doctorId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && (
+        !('createdBy' in request.resource.data) || request.resource.data.createdBy == request.auth.uid
+      );
+      allow delete: if isAuthenticated() && (
+        resource.data.createdBy == request.auth.uid
+      );
+    }
+
+    // 3. CAREGIVERS COLLECTION
+    match /caregivers/{caregiverId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated() && (
+        !('createdBy' in request.resource.data) || request.resource.data.createdBy == request.auth.uid
+      );
+      allow delete: if isAuthenticated() && (
+        resource.data.createdBy == request.auth.uid
+      );
+    }
+
+    // 4. HEALTH RECORDS COLLECTION
+    match /healthRecords/{recordId} {
+      allow read: if isAuthenticated() && (
+        !('createdBy' in resource.data) ||
+        resource.data.createdBy == request.auth.uid ||
+        !('patientId' in resource.data) ||
+        resource.data.patientId == request.auth.uid
+      );
+      allow create: if isAuthenticated() && (
+        !('createdBy' in request.resource.data) ||
+        request.resource.data.createdBy == request.auth.uid ||
+        !('patientId' in request.resource.data) ||
+        request.resource.data.patientId == request.auth.uid
+      );
+      allow update, delete: if isAuthenticated() && (
+        !('createdBy' in resource.data) ||
+        resource.data.createdBy == request.auth.uid ||
+        !('patientId' in resource.data) ||
+        resource.data.patientId == request.auth.uid
+      );
+    }
+
+    // 5. MEDICINE SCHEDULES COLLECTION
+    match /medicineSchedules/{scheduleId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && (
+        !('medicineName' in request.resource.data) || request.resource.data.medicineName != ''
+      );
+      allow update, delete: if isAuthenticated();
+    }
+
+    // 6. MEDICINE INTAKE RECORDS COLLECTION
+    match /medicineIntakeRecords/{intakeId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+
+    // 7. CAREGIVER ALERTS COLLECTION
+    match /caregiverAlerts/{alertId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+
+    // 8. NOTIFICATIONS COLLECTION
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+
+    // 9. TABLET SEARCHES & MEDICINE CONFIRMATION
+    match /tabletSearches/{searchId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /medicineConfirmation/{confirmId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    // 10. FAMILY MEMBERS COLLECTION
+    match /familyMembers/{memberId} {
+      allow read: if isAuthenticated() && (
+        !('createdBy' in resource.data) ||
+        resource.data.createdBy == request.auth.uid ||
+        !('patientId' in resource.data) ||
+        resource.data.patientId == request.auth.uid
+      );
+      allow create: if isAuthenticated() && (
+        !('createdBy' in request.resource.data) ||
+        request.resource.data.createdBy == request.auth.uid ||
+        !('patientId' in request.resource.data) ||
+        request.resource.data.patientId == request.auth.uid
+      );
+      allow update, delete: if isAuthenticated() && (
+        !('createdBy' in resource.data) ||
+        resource.data.createdBy == request.auth.uid ||
+        !('patientId' in resource.data) ||
+        resource.data.patientId == request.auth.uid
+      );
+    }
+
+    // Default deny for all unmatched collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
